@@ -68,7 +68,9 @@ startTile_p1 = [33, 33]
 startTile_p2 = [1015, 33]
 startTile_p3 = [1015, 666]
 startTile_p4 = [33,666]
+
 #----------------------------------------------------------------------------
+
 def updatePlayers(players, dice):
     cnt = 0
     while players.IsEmpty is False:
@@ -103,6 +105,7 @@ def drawPlayers(players):
         players = players.Tail
 
 #-----------------------------------------------------------------------------------------
+
 def Main():
   start             = time.time()
   players           = Empty
@@ -120,11 +123,13 @@ def Main():
   Hover_number3_r   = False
   Hover_number4_r   = False
 
+  turn = 0
+
   while True:    
     pygame.event.pump()  
     i = random.randint(0, 5)
 
-    if startMenu is True:             
+    if startMenu:             
         if Hover_play_r == True:
             screen.blit(play_hover, (705,360))
             currentscreen = 0
@@ -161,7 +166,7 @@ def Main():
                 if (pos_x > 704) and (pos_x < 960) and (pos_y > 459) and (pos_y < 506):
                     pygame.quit()
     
-    if playersMenu is True:
+    if playersMenu:
         screen.fill(black)
         pygame.font.init()
         myfont = pygame.font.SysFont("calibri", 50)
@@ -226,7 +231,8 @@ def Main():
                     playersMenu = False
                     players = Node(Player(startTile_p1, pion, 1), Node(Player(startTile_p2, pion, 2), Node(Player(startTile_p3, pion, 3), Node(Player(startTile_p4, pion, 4), Empty))))
 
-    if playing == True:
+    if playing:
+
         screen.fill(black)
         screen.blit(board, (0,0))
         screen.blit(dice, (1180, 300))
@@ -237,14 +243,24 @@ def Main():
                 if dice_r.collidepoint(pygame.mouse.get_pos()):   
                     screen.blit(dicelist[i], (1180, 300))
                     diceclicked = True
+
+            if event.type == pygame.KEYDOWN:                                                # PAUSE SCREEN
+                if event.key == pygame.K_ESCAPE:
+                    playing = False
+                    screen.fill(black)
+                    screen.blit(play, (705,360))
+                    screen.blit(exit, (705,460))
+                    currentscreen = 3
                     
         time.sleep(0.5)
 
-        if diceClicked is True:
+        if diceClicked:
             updatePlayers(players, i)
-            diceClicked = True
+            diceClicked = False
             drawPlayers(players)
 
+        turn += 1
+        print(turn)
     
     pygame.display.flip()
     time.sleep(0.01)
